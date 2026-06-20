@@ -145,6 +145,8 @@ function App() {
   const [isStoryViewerOpen, setIsStoryViewerOpen] = useState(false);
   const [storyProgress, setStoryProgress] = useState(0);
   const [activeFooterPage, setActiveFooterPage] = useState(null);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const categoryDropdownRef = useRef(null);
   const searchRef = useRef(null);
 
   const loadProducts = async () => {
@@ -240,6 +242,9 @@ function App() {
     function handleClickOutside(event) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSuggestions(false);
+      }
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+        setIsCategoryDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -767,6 +772,58 @@ function App() {
             <a href="#" className="logo" onClick={() => setActiveCategory("all")}>
               LUVRA<span>STORE</span>
             </a>
+
+            <div className="header-category-dropdown" ref={categoryDropdownRef}>
+              <button className="category-dropdown-btn" onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}>
+                <Sparkles size={16} />
+                <span>Kategoriler</span>
+              </button>
+              {isCategoryDropdownOpen && (
+                <div className="category-dropdown-menu">
+                  <div className="category-dropdown-header">Kategoriler</div>
+                  <div className="category-dropdown-grid">
+                    {STORIES.filter(s => s.id !== 'trend').map(story => (
+                      <div 
+                        key={story.id}
+                        className={`category-dropdown-item ${activeCategory === story.id ? 'active' : ''}`}
+                        onClick={() => {
+                          setActiveCategory(story.id);
+                          setIsCategoryDropdownOpen(false);
+                          window.scrollTo({ top: 400, behavior: 'smooth' });
+                        }}
+                      >
+                        <img src={story.image} alt={story.name} className="category-dropdown-img" />
+                        <span className="category-dropdown-name">{story.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="category-dropdown-divider"></div>
+                  <div className="category-dropdown-sub">
+                    <div className="category-dropdown-sub-title">Öne Çıkan Koleksiyonlar</div>
+                    <div className="category-dropdown-links">
+                      <a href="#" onClick={(e) => { e.preventDefault(); setActiveCategory("Kadın"); setIsCategoryDropdownOpen(false); window.scrollTo({ top: 400, behavior: 'smooth' }); }}>
+                        <Heart size={14} /> Kadın Giyim
+                      </a>
+                      <a href="#" onClick={(e) => { e.preventDefault(); setActiveCategory("Erkek"); setIsCategoryDropdownOpen(false); window.scrollTo({ top: 400, behavior: 'smooth' }); }}>
+                        <Heart size={14} /> Erkek Giyim
+                      </a>
+                      <a href="#" onClick={(e) => { e.preventDefault(); setActiveCategory("Parfüm"); setIsCategoryDropdownOpen(false); window.scrollTo({ top: 400, behavior: 'smooth' }); }}>
+                        <Sparkles size={14} /> Lüks Parfümler
+                      </a>
+                      <a href="#" onClick={(e) => { e.preventDefault(); setActiveCategory("Kozmetik"); setIsCategoryDropdownOpen(false); window.scrollTo({ top: 400, behavior: 'smooth' }); }}>
+                        <Star size={14} /> Cilt Bakımı
+                      </a>
+                      <a href="#" onClick={(e) => { e.preventDefault(); setActiveCategory("Aksesuar"); setIsCategoryDropdownOpen(false); window.scrollTo({ top: 400, behavior: 'smooth' }); }}>
+                        <ShoppingBag size={14} /> Aksesuar
+                      </a>
+                      <a href="#" onClick={(e) => { e.preventDefault(); setActiveCategory("Ev & Yaşam"); setIsCategoryDropdownOpen(false); window.scrollTo({ top: 400, behavior: 'smooth' }); }}>
+                        <Search size={14} /> Ev & Yaşam
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <div className="search-container" ref={searchRef}>
               <Search className="search-icon" size={18} />
