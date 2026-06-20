@@ -524,13 +524,13 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 1;
-  filter: brightness(0.4);
+  filter: brightness(0.7);
 }
 
 .carousel-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.75) 40%, rgba(0, 0, 0, 0.1));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.85) 40%, rgba(255, 255, 255, 0.1));
   z-index: 2;
 }
 
@@ -555,14 +555,14 @@ body {
   font-family: var(--font-serif);
   font-size: 42px;
   font-weight: 700;
-  color: var(--text-white);
+  color: var(--text-platinum);
   line-height: 1.2;
   margin-bottom: 16px;
 }
 
 .carousel-desc {
   font-size: 15px;
-  color: var(--text-platinum);
+  color: var(--text-gray);
   margin-bottom: 24px;
   line-height: 1.5;
 }
