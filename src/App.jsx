@@ -903,29 +903,6 @@ function App() {
           </header>
 
           <main className="main-content">
-            <section className="stories-section">
-              {STORIES.map(story => (
-                <div 
-                  key={story.id} 
-                  className={`story-circle ${activeCategory === story.id ? 'active' : ''}`}
-                  onClick={() => {
-                    if (story.id === "trend") {
-                      setActiveStorySlide(0);
-                      setStoryProgress(0);
-                      setIsStoryViewerOpen(true);
-                    } else {
-                      setActiveCategory(story.id);
-                    }
-                  }}
-                >
-                  <div className="story-img-wrapper">
-                    <img src={story.image} alt={story.name} />
-                  </div>
-                  <span className="story-name">{story.name}</span>
-                </div>
-              ))}
-            </section>
-
             <section className="hero-carousel">
               {CAMPAIGNS.map((slide, index) => (
                 <div 
