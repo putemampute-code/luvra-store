@@ -144,6 +144,7 @@ function App() {
   const [activeStorySlide, setActiveStorySlide] = useState(0);
   const [isStoryViewerOpen, setIsStoryViewerOpen] = useState(false);
   const [storyProgress, setStoryProgress] = useState(0);
+  const [activeFooterPage, setActiveFooterPage] = useState(null);
   const searchRef = useRef(null);
 
   const loadProducts = async () => {
@@ -1147,19 +1148,19 @@ function App() {
               <div>
                 <h4 className="footer-col-title">Kurumsal</h4>
                 <ul className="footer-links">
-                  <li><a href="#" className="footer-link">Hakkımızda</a></li>
-                  <li><a href="#" className="footer-link">Kariyer</a></li>
-                  <li><a href="#" className="footer-link">Sürdürülebilirlik</a></li>
-                  <li><a href="#" className="footer-link">İletişim</a></li>
+                  <li><a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('hakkimizda'); }}>Hakkımızda</a></li>
+                  <li><a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('kariyer'); }}>Kariyer</a></li>
+                  <li><a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('surdurulebilirlik'); }}>Sürdürülebilirlik</a></li>
+                  <li><a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('iletisim'); }}>İletişim</a></li>
                 </ul>
               </div>
               <div>
                 <h4 className="footer-col-title">Müşteri Hizmetleri</h4>
                 <ul className="footer-links">
-                  <li><a href="#" className="footer-link">Kolay İade & Değişim</a></li>
-                  <li><a href="#" className="footer-link">Sıkça Sorulan Sorular</a></li>
-                  <li><a href="#" className="footer-link">Kargo Takibi</a></li>
-                  <li><a href="#" className="footer-link">Güvenli Alışveriş Rehberi</a></li>
+                  <li><a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('iade'); }}>Kolay İade & Değişim</a></li>
+                  <li><a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('sss'); }}>Sıkça Sorulan Sorular</a></li>
+                  <li><a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setIsTrackingOpen(true); }}>Kargo Takibi</a></li>
+                  <li><a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('guvenli'); }}>Güvenli Alışveriş Rehberi</a></li>
                 </ul>
               </div>
               <div>
@@ -1175,8 +1176,8 @@ function App() {
             <div className="footer-bottom">
               <span>&copy; {new Date().getFullYear()} LUVRA STORE. Tüm hakları saklıdır.</span>
               <span style={{ display: 'flex', gap: '15px' }}>
-                <a href="#" className="footer-link">KVK Aydınlatma Metni</a>
-                <a href="#" className="footer-link">Kullanıcı Sözleşmesi</a>
+                <a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('kvkk'); }}>KVK Aydınlatma Metni</a>
+                <a href="#" className="footer-link" onClick={(e) => { e.preventDefault(); setActiveFooterPage('sozlesme'); }}>Kullanıcı Sözleşmesi</a>
               </span>
             </div>
           </footer>
@@ -2532,6 +2533,220 @@ function App() {
                     <div style={{ color: '#5e6b7c', marginTop: '4px' }}>{ret.date}</div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Footer Pages Modal */}
+      {activeFooterPage && (
+        <div className="modal-overlay" onClick={() => setActiveFooterPage(null)}>
+          <div className="modal-content glass-panel" style={{ maxWidth: '650px', maxHeight: '80vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setActiveFooterPage(null)}><X size={18} /></button>
+
+            {activeFooterPage === 'hakkimizda' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>Hakkımızda</h2>
+                <p style={{ color: '#c5c6c7', lineHeight: 1.8, fontSize: '14px', marginBottom: '15px' }}>
+                  <b style={{ color: '#c5a880' }}>LUVRA STORE</b>, 2024 yılında Türkiye'nin önde gelen lüks moda ve yaşam tarzı markası olarak kuruldu. Amacımız, premium kalitedeki ürünleri ulaşılabilir fiyatlarla sunarak herkesin şıklığı deneyimlemesini sağlamaktır.
+                </p>
+                <p style={{ color: '#c5c6c7', lineHeight: 1.8, fontSize: '14px', marginBottom: '15px' }}>
+                  Kadın ve erkek giyiminden lüks parfümlere, cilt bakım ürünlerinden ev dekorasyonuna kadar geniş bir yelpazede ürün sunuyoruz. Her bir ürünümüz, kalite ve tasarım titizliğiyle seçilmiştir.
+                </p>
+                <p style={{ color: '#c5c6c7', lineHeight: 1.8, fontSize: '14px', marginBottom: '20px' }}>
+                  <b style={{ color: '#c5a880' }}>Vizyonumuz:</b> E-ticarette güvenilir, yenilikçi ve müşteri odaklı bir marka olarak uluslararası arenada tanınmak.
+                </p>
+                <p style={{ color: '#c5c6c7', lineHeight: 1.8, fontSize: '14px' }}>
+                  <b style={{ color: '#c5a880' }}>Misyonumuz:</b> Müşterilerimize en kaliteli ürünleri, en hızlı teslimat ve en güvenilir alışveriş deneyimiyle sunmak.
+                </p>
+              </div>
+            )}
+
+            {activeFooterPage === 'kariyer' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>Kariyer</h2>
+                <p style={{ color: '#c5c6c7', lineHeight: 1.8, fontSize: '14px', marginBottom: '20px' }}>
+                  LUVRA STORE olarak sürekli büyüyoruz ve ekibimize yeni yetenekler katıyoruz. Eğer dinamik, yaratıcı ve tutkulu bir ekibin parçası olmak istiyorsanız doğru yerdesiniz.
+                </p>
+                <h3 style={{ color: '#c5a880', fontSize: '16px', marginBottom: '12px' }}>Açık Pozisyonlar</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { title: 'Dijital Pazarlama Uzmanı', dept: 'Pazarlama', location: 'İstanbul' },
+                    { title: 'Frontend Geliştirici', dept: 'Teknoloji', location: 'Uzaktan' },
+                    { title: 'Müşteri Hizmetleri Danışmanı', dept: 'Operasyon', location: 'İstanbul' },
+                    { title: 'Grafik Tasarımcı', dept: 'Tasarım', location: 'İstanbul' }
+                  ].map((job, i) => (
+                    <div key={i} style={{ padding: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <div style={{ fontWeight: 600, color: '#fff', fontSize: '14px' }}>{job.title}</div>
+                        <div style={{ fontSize: '12px', color: '#8892b0', marginTop: '4px' }}>{job.dept} • {job.location}</div>
+                      </div>
+                      <button style={{ padding: '6px 16px', background: 'transparent', border: '1px solid #c5a880', color: '#c5a880', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.3s' }}
+                        onMouseEnter={(e) => { e.target.style.background = '#c5a880'; e.target.style.color = '#0b0c10'; }}
+                        onMouseLeave={(e) => { e.target.style.background = 'transparent'; e.target.style.color = '#c5a880'; }}
+                        onClick={() => setActiveFooterPage('iletisim')}
+                      >Başvur</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFooterPage === 'surdurulebilirlik' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>Sürdürülebilirlik</h2>
+                <p style={{ color: '#c5c6c7', lineHeight: 1.8, fontSize: '14px', marginBottom: '20px' }}>
+                  LUVRA STORE olarak çevre bilincini iş modelimizin merkezine koyuyoruz. Gelecek nesillere daha yaşanabilir bir dünya bırakmak için sorumlu üretim ve tüketim ilkelerine bağlıyız.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '15px' }}>
+                  {[
+                    { icon: '♻️', title: 'Geri Dönüşümlü Paketleme', desc: 'Tüm ambalajlarımız %100 geri dönüşümlü malzemelerden üretilmektedir.' },
+                    { icon: '🌿', title: 'Doğal Ürünler', desc: 'Parfüm ve cilt bakım ürünlerimiz doğa dostu hammaddelerden üretilmektedir.' },
+                    { icon: '⚡', title: 'Karbon Ayak İzi', desc: 'Lojistik süreçlerimizde karbon emisyonunu minimuma indiriyoruz.' },
+                    { icon: '🤝', title: 'Adil Ticaret', desc: 'Tedarik zincirimizde adil çalışma koşullarını destekliyoruz.' }
+                  ].map((item, i) => (
+                    <div key={i} style={{ padding: '16px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '28px', marginBottom: '8px' }}>{item.icon}</div>
+                      <div style={{ fontWeight: 600, color: '#fff', fontSize: '13px', marginBottom: '6px' }}>{item.title}</div>
+                      <div style={{ fontSize: '11px', color: '#8892b0', lineHeight: 1.5 }}>{item.desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFooterPage === 'iletisim' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>İletişim</h2>
+                <p style={{ color: '#c5c6c7', lineHeight: 1.8, fontSize: '14px', marginBottom: '20px' }}>
+                  Sorularınız, önerileriniz veya talepleriniz için bize ulaşmaktan çekinmeyin. Müşteri memnuniyeti bizim için en üst önceliktir.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                  {[
+                    { icon: <Sparkles size={20} />, title: 'Müşteri Hizmetleri', info: 'info@luvrastore.com', sub: '7/24 e-posta desteği' },
+                    { icon: <Search size={20} />, title: 'Telefon', info: '+90 (500) 123 45 67', sub: 'Her gün 09:00 - 22:00' },
+                    { icon: <Heart size={20} />, title: 'Sosyal Medya', info: '@luvrastore', sub: 'Instagram, TikTok, Twitter' },
+                    { icon: <ShoppingBag size={20} />, title: 'Merkez', info: 'Kadıköy, İstanbul', sub: 'Atatürk Mah. Lüks Cad. No:1' }
+                  ].map((item, i) => (
+                    <div key={i} style={{ padding: '18px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px' }}>
+                      <div style={{ color: '#c5a880', marginBottom: '10px' }}>{item.icon}</div>
+                      <div style={{ fontWeight: 600, color: '#fff', fontSize: '13px', marginBottom: '4px' }}>{item.title}</div>
+                      <div style={{ fontSize: '14px', color: '#c5a880', marginBottom: '4px' }}>{item.info}</div>
+                      <div style={{ fontSize: '11px', color: '#8892b0' }}>{item.sub}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFooterPage === 'iade' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>Kolay İade & Değişim</h2>
+                <p style={{ color: '#c5c6c7', lineHeight: 1.8, fontSize: '14px', marginBottom: '20px' }}>
+                  LUVRA STORE'dan satın aldığınız ürünleri <b style={{ color: '#c5a880' }}>14 gün</b> içerisinde koşulsuz iade edebilir veya değiştirebilirsiniz.
+                </p>
+                <h3 style={{ color: '#c5a880', fontSize: '15px', marginBottom: '12px' }}>İade Koşulları</h3>
+                <ul style={{ color: '#c5c6c7', fontSize: '13px', lineHeight: 2, paddingLeft: '20px', marginBottom: '20px' }}>
+                  <li>Ürünün kullanılmamış ve etiketinin koparılmamış olması gerekmektedir.</li>
+                  <li>Orijinal ambalajı ile birlikte gönderilmesi gerekmektedir.</li>
+                  <li>İade talebi oluşturulduktan sonra 48 saat içerisinde kargoya verilmelidir.</li>
+                  <li>Kargo ücreti ilk iade işlemlerinde firmamız tarafından karşılanmaktadır.</li>
+                  <li>Flaş ürünlerde ve özel indirimli ürünlerde iade hakkı saklıdır.</li>
+                </ul>
+                <h3 style={{ color: '#c5a880', fontSize: '15px', marginBottom: '12px' }}>Değişim Süreci</h3>
+                <p style={{ color: '#c5c6c7', fontSize: '13px', lineHeight: 1.8 }}>
+                  Beden veya renk değişikliği için müşteri hizmetlerimize ulaşmanız yeterlidir. Stok durumuna göre aynı gün veya en geç 3 iş günü içerisinde değişim gerçekleştirilir.
+                </p>
+                <button style={{ marginTop: '20px', padding: '10px 24px', background: '#c5a880', color: '#0b0c10', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}
+                  onClick={() => { setActiveFooterPage(null); setIsReturnOpen(true); }}
+                >İade Talebi Oluştur</button>
+              </div>
+            )}
+
+            {activeFooterPage === 'sss' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>Sıkça Sorulan Sorular</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {[
+                    { q: 'Siparişim ne zaman kargoya verilir?', a: 'Siparişleriniz onaylandıktan sonra 1-2 iş günü içerisinde kargoya verilir. Resmi tatillerde bu süre uzayabilir.' },
+                    { q: 'Kargo ücreti ne kadar?', a: '1500 TL ve üzeri alışverişlerde kargo ücretsizdir. 1500 TL altı siparişlerde kargo ücreti 59.90 TL\'dir.' },
+                    { q: 'Ürünlerin orijinalliği nedir?', a: 'Tüm ürünlerimiz LUVRA STORE güvencesiyle orijinal ve sertifikalıdır. %100 müşteri memnuniyeti garantisi sunuyoruz.' },
+                    { q: 'Hediye paketi yapıyor musunuz?', a: 'Evet, tüm siparişlerimiz özel hediye paketi ile gönderilir. Ek hediye notu eklemek için sipariş sırasında not bölümüne yazabilirsiniz.' },
+                    { q: 'Ödeme yöntemleri nelerdir?', a: 'Kredi kartı, banka kartı ile güvenli ödeme yapabilirsiniz. 3D Secure koruması ile işlemleriniz güvendedir.' },
+                    { q: 'Ürünleri mağazadan teslim alabilir miyim?', a: 'Şu anda sadece online satış yapmaktayız. Ancak yakında İstanbul\'da bir showroom açmayı planlıyoruz.' }
+                  ].map((item, i) => (
+                    <div key={i} style={{ padding: '16px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px' }}>
+                      <div style={{ fontWeight: 600, color: '#c5a880', fontSize: '13px', marginBottom: '8px' }}>{item.q}</div>
+                      <div style={{ fontSize: '13px', color: '#c5c6c7', lineHeight: 1.6 }}>{item.a}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeFooterPage === 'guvenli' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>Güvenli Alışveriş Rehberi</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                  {[
+                    { step: '1', title: 'Hesap Oluşturun', desc: 'Üye olarak siparişlerinizi takip edebilir, favori ürünlerinizi kaydedebilirsiniz.' },
+                    { step: '2', title: 'Ürünleri Keşfedin', desc: 'Kategoriler, filtreler ve arama ile aradığınız ürüne kolayca ulaşın.' },
+                    { step: '3', title: 'Sepete Ekleyin', desc: 'Renk ve beden seçiminizi yapın, ürünü sepete ekleyin.' },
+                    { step: '4', title: 'Güvenle Ödeyin', desc: '3D Secure korumasıyla kredi kartınızla güvenli ödeme yapın.' },
+                    { step: '5', title: 'Kargonuzu Takip Edin', desc: 'Siparişiniz kargoya verildiğinde bilgilendirilirsiniz. Hesabınızdan kargo durumunu takip edebilirsiniz.' }
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
+                      <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(197,168,128,0.15)', border: '1px solid rgba(197,168,128,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#c5a880', fontSize: '14px', flexShrink: 0 }}>{item.step}</div>
+                      <div>
+                        <div style={{ fontWeight: 600, color: '#fff', fontSize: '14px', marginBottom: '4px' }}>{item.title}</div>
+                        <div style={{ fontSize: '13px', color: '#8892b0', lineHeight: 1.5 }}>{item.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(46,204,113,0.08)', border: '1px solid rgba(46,204,113,0.2)', borderRadius: '10px', fontSize: '13px', color: '#2ecc71', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <CheckCircle2 size={20} />
+                  Tüm ödemeleriniz 256-bit SSL şifreleme ile korunmaktadır.
+                </div>
+              </div>
+            )}
+
+            {activeFooterPage === 'kvkk' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>KVKK Aydınlatma Metni</h2>
+                <div style={{ color: '#c5c6c7', fontSize: '13px', lineHeight: 1.8 }}>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>1. Veri Sorumlusu</b><br/>
+                  Lüks E-Ticaret A.Ş. ("LUVRA STORE") olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında veri sorumlusu sıfatıyla hareket etmekteyiz.</p>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>2. Toplanan Kişisel Veriler</b><br/>
+                  Adınız, soyadınız, e-posta adresiniz, teslimat adresiniz, telefon numaranız, ödeme kartı bilgileriniz (maskeli), alışveriş geçmişi ve IP adresiniz.</p>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>3. Verilerin Kullanım Amacı</b><br/>
+                  Sipariş processing, teslimat, müşteri hizmetleri, pazarlama iletişimi, yasal yükümlülüklerin yerine getirilmesi.</p>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>4. Veri Saklama Süresi</b><br/>
+                  Kişisel verileriniz, hukuki yükümlülüklerin yerine getirilmesi ve yasal süre boyunca saklanmaktadır.</p>
+                  <p><b style={{ color: '#c5a880' }}>5. Haklarınız</b><br/>
+                  KVKK kapsamında verilerinize erişme, düzeltme, silme ve işlenmesini talep etme haklarınız bulunmaktadır. Detaylar için info@luvrastore.com adresine başvurabilirsiniz.</p>
+                </div>
+              </div>
+            )}
+
+            {activeFooterPage === 'sozlesme' && (
+              <div style={{ padding: '10px' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', color: '#fff', marginBottom: '20px' }}>Kullanıcı Sözleşmesi</h2>
+                <div style={{ color: '#c5c6c7', fontSize: '13px', lineHeight: 1.8 }}>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>Madde 1 - Taraflar</b><br/>
+                  Bu sözleşme, Lüks E-Ticaret A.Ş. ("Satıcı") ile siteye üye olan kullanıcı ("Alıcı") arasında düzenlenmiştir.</p>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>Madde 2 - Konu</b><br/>
+                  Bu sözleşmenin konusu, Alıcı'nın Satıcı'ya ait internet sitesinden elektronik ortamda sipariş verdiği ürünlerin satışı ve teslimi ile ilgili hak ve yükümlülüklerin belirlenmesidir.</p>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>Madde 3 - Ürün Bilgileri</b><br/>
+                  Satın alınan ürünlerin nitelikleri, miktarı, satış fiyatı, ödeme şekli ve teslimat koşulları sipariş onay sayfasında belirtildiği gibidir.</p>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>Madde 4 - Ödeme</b><br/>
+                  Alıcı, kredi kartı ile online ödeme yapabilir. 3D Secure ile güvenli ödeme sağlanmaktadır. Tüm fiyatlar KDV dahildir.</p>
+                  <p style={{ marginBottom: '15px' }}><b style={{ color: '#c5a880' }}>Madde 5 - Teslimat</b><br/>
+                  Siparişler, onayından itibaren 1-3 iş günü içinde kargoya verilir. 1500 TL üzeri alışverişlerde kargo ücretsizdir.</p>
+                  <p><b style={{ color: '#c5a880' }}>Madde 6 - Cayma Hakkı</b><br/>
+                  Alıcı, ürünü teslim aldığı tarihten itibaren 14 gün içinde cayma hakkına sahiptir. Ürünün kullanılmamış ve orijinal ambalajında olması gerekmektedir.</p>
+                </div>
               </div>
             )}
           </div>
