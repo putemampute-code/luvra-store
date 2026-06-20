@@ -1,76 +1,59 @@
-import { 
-  collection, 
-  getDocs, 
-  getDoc, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  doc, 
-  query, 
-  where, 
-  serverTimestamp 
-} from 'firebase/firestore';
-import { db } from '../config/firebase';
+const PRODUCTS_KEY = 'luvra_products';
 
-const PRODUCTS_COLLECTION = 'products';
+const getProducts = () => {
+  const saved = localStorage.getItem(PRODUCTS_KEY);
+  return saved ? JSON.parse(saved) : [];
+};
+
+const saveProducts = (products) => {
+  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+};
 
 export const getAllProducts = async () => {
-  const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return getProducts();
 };
 
 export const getProductsByCategory = async (category) => {
-  const q = query(
-    collection(db, PRODUCTS_COLLECTION), 
-    where('category', '==', category)
-  );
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return getProducts().filter(p => p.category === category);
 };
 
 export const getFlashSaleProducts = async () => {
-  const q = query(
-    collection(db, PRODUCTS_COLLECTION), 
-    where('isFlashSale', '==', true)
-  );
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return getProducts().filter(p => p.isFlashSale);
 };
 
 export const getProductById = async (id) => {
-  const docRef = doc(db, PRODUCTS_COLLECTION, id);
-  const docSnap = await getDoc(docRef);
-  return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+  const products = getProducts();
+  return products.find(p => p.id === id) || null;
 };
 
 export const addProduct = async (productData) => {
-  const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
-    ...productData,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  });
-  return docRef.id;
+  const products = getProducts();
+  const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+  const newProduct = { id: newId, ...productData, createdAt: new Date().toISOString() };
+  products.unshift(newProduct);
+  saveProducts(products);
+  return newId;
 };
 
 export const updateProduct = async (id, productData) => {
-  const docRef = doc(db, PRODUCTS_COLLECTION, id);
-  await updateDoc(docRef, {
-    ...productData,
-    updatedAt: serverTimestamp()
-  });
+  const products = getProducts();
+  const index = products.findIndex(p => p.id === id);
+  if (index === -1) throw new Error('Ürün bulunamadı');
+  products[index] = { ...products[index], ...productData };
+  saveProducts(products);
 };
 
 export const deleteProduct = async (id) => {
-  await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
+  const products = getProducts();
+  const filtered = products.filter(p => p.id !== id);
+  saveProducts(filtered);
 };
 
-export const searchProducts = async (searchTerm) => {
-  const snapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
-  const allProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  const lower = searchTerm.toLowerCase();
-  return allProducts.filter(p => 
-    p.title?.toLowerCase().includes(lower) || 
-    p.category?.toLowerCase().includes(lower) ||
-    p.description?.toLowerCase().includes(lower)
+export const searchProducts = async (query) => {
+  const q = query.toLowerCase();
+  return getProducts().filter(p =>
+    p.title.toLowerCase().includes(q) ||
+    p.category.toLowerCase().includes(q) ||
+    p.description.toLowerCase().includes(q)
   );
 };

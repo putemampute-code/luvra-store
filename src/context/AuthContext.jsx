@@ -9,37 +9,34 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthChange(async (user) => {
-      setCurrentUser(user);
+    onAuthChange(async (user) => {
       if (user) {
+        setCurrentUser(user);
         const profile = await getUserProfile(user.uid);
         setUserProfile(profile);
       } else {
+        setCurrentUser(null);
         setUserProfile(null);
       }
       setLoading(false);
     });
-    return unsubscribe;
   }, []);
 
   const login = async (email, password) => {
     const user = await loginUser(email, password);
-    setUserProfile(user);
     setCurrentUser(user);
-    return user;
+    const profile = await getUserProfile(user.uid);
+    setUserProfile(profile);
   };
 
   const register = async (email, password, name) => {
-    const user = await registerUser(email, password, name);
-    setUserProfile(user);
-    setCurrentUser(user);
-    return user;
+    await registerUser(email, password, name);
   };
 
   const logout = async () => {
@@ -60,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
-};
+}
