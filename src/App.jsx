@@ -821,6 +821,19 @@ function App() {
                       </a>
                     </div>
                   </div>
+                  <div className="category-dropdown-divider"></div>
+                  <div className="category-dropdown-trend" onClick={() => {
+                    setActiveStorySlide(0);
+                    setStoryProgress(0);
+                    setIsStoryViewerOpen(true);
+                    setIsCategoryDropdownOpen(false);
+                  }}>
+                    <Sparkles size={18} style={{ color: '#c5a880' }} />
+                    <div>
+                      <div style={{ fontWeight: 600, color: '#fff', fontSize: '13px' }}>Trend Ürünler</div>
+                      <div style={{ fontSize: '11px', color: '#8892b0' }}>Yeni sezon trendlerini keşfet</div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

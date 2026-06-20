@@ -399,6 +399,24 @@ body {
   color: var(--text-gold);
 }
 
+.category-dropdown-trend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 8px 12px 12px;
+  background: rgba(197, 168, 128, 0.08);
+  border: 1px solid rgba(197, 168, 128, 0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.category-dropdown-trend:hover {
+  background: rgba(197, 168, 128, 0.15);
+  border-color: rgba(197, 168, 128, 0.3);
+}
+
 @media (max-width: 600px) {
   .category-dropdown-menu {
     width: calc(100vw - 20px);
