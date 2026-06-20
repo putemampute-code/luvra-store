@@ -146,6 +146,16 @@ function App() {
   const [storyProgress, setStoryProgress] = useState(0);
   const [activeFooterPage, setActiveFooterPage] = useState(null);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState(() => {
+    const saved = localStorage.getItem('luvra_chat_messages');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [chatInput, setChatInput] = useState('');
+  const [chatUserName, setChatUserName] = useState('');
+  const [chatUserEmail, setChatUserEmail] = useState('');
+  const [chatRegistered, setChatRegistered] = useState(false);
+  const [adminChatReplies, setAdminChatReplies] = useState({});
   const categoryDropdownRef = useRef(null);
   const searchRef = useRef(null);
 
@@ -311,6 +321,38 @@ function App() {
       }
     }
   };
+
+  const sendChatMessage = () => {
+    if (!chatInput.trim() || !chatRegistered) return;
+    const newMsg = {
+      id: Date.now(),
+      sender: 'customer',
+      name: chatUserName,
+      message: chatInput.trim(),
+      time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+      read: false
+    };
+    const updated = [...chatMessages, newMsg];
+    setChatMessages(updated);
+    localStorage.setItem('luvra_chat_messages', JSON.stringify(updated));
+    setChatInput('');
+  };
+
+  const replyChatMessage = (messageId, replyText) => {
+    if (!replyText.trim()) return;
+    const reply = {
+      id: Date.now(),
+      sender: 'admin',
+      message: replyText.trim(),
+      time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+      replyTo: messageId
+    };
+    const updated = [...chatMessages, reply];
+    setChatMessages(updated);
+    localStorage.setItem('luvra_chat_messages', JSON.stringify(updated));
+  };
+
+  const unreadChatCount = chatMessages.filter(m => m.sender === 'customer' && !m.read).length;
 
   const addToCart = (product, color = "", size = "") => {
     const chosenColor = color || (product.colors ? product.colors[0] : "Standart");
@@ -1304,6 +1346,9 @@ function App() {
             <button className={`admin-tab-btn ${adminTab === 'refunds' ? 'active' : ''}`} onClick={() => setAdminTab('refunds')}>İade Talepleri</button>
             <button className={`admin-tab-btn ${adminTab === 'invoices' ? 'active' : ''}`} onClick={() => setAdminTab('invoices')}>Faturalar</button>
             <button className={`admin-tab-btn ${adminTab === 'customers' ? 'active' : ''}`} onClick={() => setAdminTab('customers')}>Müşteri & Adres Veritabanı</button>
+            <button className={`admin-tab-btn ${adminTab === 'livechat' ? 'active' : ''}`} onClick={() => setAdminTab('livechat')}>
+              Canlı Destek {unreadChatCount > 0 && <span style={{ background: '#e74c3c', color: '#fff', fontSize: '10px', padding: '2px 6px', borderRadius: '10px', marginLeft: '4px' }}>{unreadChatCount}</span>}
+            </button>
           </div>
 
           {adminTab === 'products' && (
@@ -1715,6 +1760,105 @@ function App() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {adminTab === 'livechat' && (
+            <div className="glass-panel" style={{ padding: '25px' }}>
+              <h2 style={{ fontSize: '18px', marginBottom: '20px', color: '#fff', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px' }}>
+                Canlı Destek Mesajları
+              </h2>
+              {chatMessages.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: '#8892b0' }}>
+                  <Sparkles size={48} style={{ color: '#c5a880', opacity: 0.5, marginBottom: '15px' }} />
+                  <h3 style={{ color: '#fff', fontSize: '16px', marginBottom: '8px' }}>Henüz mesaj yok</h3>
+                  <p style={{ fontSize: '13px' }}>Müşterilerden gelen mesajlar burada görünecek.</p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {(() => {
+                    const customerMsgs = chatMessages.filter(m => m.sender === 'customer');
+                    const grouped = {};
+                    customerMsgs.forEach(msg => {
+                      const key = msg.name;
+                      if (!grouped[key]) grouped[key] = [];
+                      grouped[key].push(msg);
+                    });
+                    return Object.entries(grouped).map(([name, msgs]) => {
+                      const lastMsg = msgs[msgs.length - 1];
+                      const replies = chatMessages.filter(m => m.sender === 'admin' && m.replyTo && msgs.some(cm => cm.id === m.replyTo));
+                      const hasUnread = msgs.some(m => !m.read);
+                      const replyText = adminChatReplies[name] || '';
+                      return (
+                        <div key={name} style={{ padding: '16px', background: hasUnread ? 'rgba(197,168,128,0.08)' : 'rgba(255,255,255,0.03)', border: `1px solid ${hasUnread ? 'rgba(197,168,128,0.3)' : 'rgba(255,255,255,0.05)'}`, borderRadius: '12px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                            <div>
+                              <span style={{ fontWeight: 700, color: '#fff', fontSize: '14px' }}>{name}</span>
+                              {hasUnread && <span style={{ background: '#ff6f3c', color: '#fff', fontSize: '9px', padding: '2px 6px', borderRadius: '8px', marginLeft: '8px', fontWeight: 700 }}>YENİ</span>}
+                            </div>
+                            <span style={{ fontSize: '11px', color: '#8892b0' }}>{lastMsg.time}</span>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
+                            {msgs.map(m => (
+                              <div key={m.id} style={{ padding: '8px 12px', background: 'rgba(197,168,128,0.1)', borderRadius: '8px', fontSize: '13px', color: '#c5c6c7' }}>
+                                {m.message}
+                                <span style={{ fontSize: '10px', color: '#5e6b7c', marginLeft: '8px' }}>{m.time}</span>
+                              </div>
+                            ))}
+                            {replies.map(r => (
+                              <div key={r.id} style={{ padding: '8px 12px', background: 'rgba(46,204,113,0.1)', borderRadius: '8px', fontSize: '13px', color: '#c5c6c7', marginLeft: '20px', borderLeft: '3px solid #2ecc71' }}>
+                                {r.message}
+                                <span style={{ fontSize: '10px', color: '#5e6b7c', marginLeft: '8px' }}>{r.time} • Yanıt</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <input 
+                              type="text" 
+                              placeholder="Yanıt yazın..." 
+                              style={{ flex: 1, background: '#f5f5f5', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', color: '#333' }}
+                              value={replyText}
+                              onChange={(e) => setAdminChatReplies({ ...adminChatReplies, [name]: e.target.value })}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && replyText.trim()) {
+                                  const allUpdated = chatMessages.map(m => msgs.some(cm => cm.id === m.id) ? { ...m, read: true } : m);
+                                  setChatMessages(allUpdated);
+                                  localStorage.setItem('luvra_chat_messages', JSON.stringify(allUpdated));
+                                  replyChatMessage(lastMsg.id, replyText);
+                                  setAdminChatReplies({ ...adminChatReplies, [name]: '' });
+                                }
+                              }}
+                            />
+                            <button 
+                              style={{ padding: '8px 16px', background: '#c5a880', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+                              onClick={() => {
+                                if (replyText.trim()) {
+                                  const allUpdated = chatMessages.map(m => msgs.some(cm => cm.id === m.id) ? { ...m, read: true } : m);
+                                  setChatMessages(allUpdated);
+                                  localStorage.setItem('luvra_chat_messages', JSON.stringify(allUpdated));
+                                  replyChatMessage(lastMsg.id, replyText);
+                                  setAdminChatReplies({ ...adminChatReplies, [name]: '' });
+                                }
+                              }}
+                            >Gönder</button>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              )}
+              {chatMessages.length > 0 && (
+                <button 
+                  style={{ marginTop: '20px', padding: '10px 20px', background: 'rgba(231,76,60,0.15)', border: '1px solid rgba(231,76,60,0.3)', borderRadius: '8px', color: '#e74c3c', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                  onClick={() => {
+                    if (confirm('Tüm mesajları silmek istediğinize emin misiniz?')) {
+                      setChatMessages([]);
+                      localStorage.removeItem('luvra_chat_messages');
+                    }
+                  }}
+                >Tüm Mesajları Temizle</button>
+              )}
             </div>
           )}
 
@@ -2797,6 +2941,98 @@ function App() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Live Chat Widget */}
+      {!adminMode && (
+        <div className="live-chat-widget">
+          {!isChatOpen ? (
+            <button className="chat-fab" onClick={() => setIsChatOpen(true)}>
+              <Sparkles size={24} />
+              <span className="chat-fab-label">Canlı Destek</span>
+              {unreadChatCount > 0 && <span className="chat-fab-badge">Yanıtlandı</span>}
+            </button>
+          ) : (
+            <div className="chat-panel">
+              <div className="chat-header">
+                <div className="chat-header-info">
+                  <div className="chat-header-avatar">
+                    <Sparkles size={18} />
+                  </div>
+                  <div>
+                    <div className="chat-header-title">LUVRA Destek</div>
+                    <div className="chat-header-status">
+                      <span className="chat-online-dot"></span> Çevrimiçi
+                    </div>
+                  </div>
+                </div>
+                <button className="chat-close-btn" onClick={() => setIsChatOpen(false)}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              {!chatRegistered ? (
+                <div className="chat-register">
+                  <p>Merhaba! Size nasıl yardımcı olabiliriz?</p>
+                  <input 
+                    type="text" 
+                    placeholder="Adınız" 
+                    value={chatUserName}
+                    onChange={(e) => setChatUserName(e.target.value)}
+                    className="chat-register-input"
+                  />
+                  <input 
+                    type="email" 
+                    placeholder="E-posta adresiniz" 
+                    value={chatUserEmail}
+                    onChange={(e) => setChatUserEmail(e.target.value)}
+                    className="chat-register-input"
+                  />
+                  <button 
+                    className="chat-register-btn"
+                    onClick={() => {
+                      if (chatUserName.trim() && chatUserEmail.trim()) {
+                        setChatRegistered(true);
+                      }
+                    }}
+                  >Sohbete Başla</button>
+                </div>
+              ) : (
+                <>
+                  <div className="chat-messages">
+                    <div className="chat-message customer">
+                      <div className="chat-msg-bubble">
+                        Merhaba, {chatUserName}! Size nasıl yardımcı olabiliriz?
+                      </div>
+                      <div className="chat-msg-time">LUVRA Destek • Şimdi</div>
+                    </div>
+                    {chatMessages.map(msg => (
+                      <div key={msg.id} className={`chat-message ${msg.sender === 'customer' ? 'customer' : 'admin'}`}>
+                        <div className="chat-msg-bubble">
+                          {msg.message}
+                        </div>
+                        <div className="chat-msg-time">{msg.sender === 'admin' ? 'LUVRA Destek' : msg.name} • {msg.time}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="chat-input-area">
+                    <input 
+                      type="text" 
+                      placeholder="Mesajınızı yazın..." 
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') sendChatMessage(); }}
+                      className="chat-input"
+                    />
+                    <button className="chat-send-btn" onClick={sendChatMessage}>
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
 
