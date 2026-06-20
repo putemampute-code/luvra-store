@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "name": "luvra-store",
+  "builds": [
+    {
+      "src": "vite.config.js",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_FIREBASE_API_KEY": "@vite-firebase-api-key",
+    "VITE_FIREBASE_AUTH_DOMAIN": "@vite-firebase-auth-domain",
+    "VITE_FIREBASE_PROJECT_ID": "@vite-firebase-project-id",
+    "VITE_FIREBASE_STORAGE_BUCKET": "@vite-firebase-storage-bucket",
+    "VITE_FIREBASE_MESSAGING_SENDER_ID": "@vite-firebase-messaging-sender-id",
+    "VITE_FIREBASE_APP_ID": "@vite-firebase-app-id",
+    "IYZICO_API_KEY": "@iyzico-api-key",
+    "IYZICO_SECRET_KEY": "@iyzico-secret-key"
+  }
+}
